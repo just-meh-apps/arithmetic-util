@@ -18,6 +18,22 @@
 
 ---
 
+## Null Safety
+
+To prevent `NullPointerException` and simplify arithmetic logic, all methods in this class are designed to be null-safe. Any `null` input for a `Number` or `String` argument is automatically treated as `BigDecimal.ZERO`. This ensures predictable and safe behavior across all operations, eliminating the need for external null checks.
+
+```java
+// These calls will not throw NullPointerException
+BigDecimal sum = ArithmeticUtil.add(10, null);      // Result: 10
+BigDecimal value = ArithmeticUtil.toBigDecimal(null); // Result: 0
+boolean isZero = ArithmeticUtil.isZero(null);         // Result: true
+```
+
+This design principle makes the library robust and easy to use, as you don't have to worry about unexpected null-related errors during calculations.
+
+---
+
+
 ## `Scale` Enum
 
 Provides the `Scale` enum to manage the precision of operations clearly and consistently.
@@ -40,8 +56,17 @@ Converts any object of a number type to a `BigDecimal`. `null` is handled as `Bi
 
 ```java
 BigDecimal bd1 = ArithmeticUtil.toBigDecimal(123.45); // 123.45
-BigDecimal bd2 = ArithmeticUtil.toBigDecimal("123.45"); // 123.45
-BigDecimal bd3 = ArithmeticUtil.toBigDecimal(null);   // 0
+BigDecimal bd2 = ArithmeticUtil.toBigDecimal(null);   // 0
+```
+
+#### `toBigDecimal(String)`
+Converts a string to a `BigDecimal`. `null`, empty, or blank strings are handled as `BigDecimal.ZERO`.
+
+```java
+BigDecimal bd1 = ArithmeticUtil.toBigDecimal("123.45");      // 123.45
+BigDecimal bd2 = ArithmeticUtil.toBigDecimal("  123.45  ");  // 123.45
+BigDecimal bd3 = ArithmeticUtil.toBigDecimal(null);          // 0
+BigDecimal bd4 = ArithmeticUtil.toBigDecimal("");            // 0
 ```
 
 #### `toString(Number, boolean)`

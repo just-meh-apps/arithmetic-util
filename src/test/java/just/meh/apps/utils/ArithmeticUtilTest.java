@@ -17,8 +17,8 @@ class ArithmeticUtilTest {
     @Nested
     class ToBigDecimalTests {
         @Test
-        void shouldReturnZeroWhenNull() {
-            assertThat(ArithmeticUtil.toBigDecimal(null)).isEqualByComparingTo(BigDecimal.ZERO);
+        void shouldReturnZeroWhenNumberIsNull() {
+            assertThat(ArithmeticUtil.toBigDecimal((Number) null)).isEqualByComparingTo(BigDecimal.ZERO);
         }
 
         @Test
@@ -74,6 +74,37 @@ class ArithmeticUtilTest {
         void shouldHandleNegativeNumbers() {
             assertThat(ArithmeticUtil.toBigDecimal(-123)).isEqualByComparingTo(new BigDecimal("-123"));
             assertThat(ArithmeticUtil.toBigDecimal(-123.456)).isEqualByComparingTo(BigDecimal.valueOf(-123.456));
+        }
+
+        @Test
+        void shouldConvertValidString() {
+            assertThat(ArithmeticUtil.toBigDecimal("123.45")).isEqualByComparingTo("123.45");
+        }
+
+        @Test
+        void shouldConvertStringWithWhitespace() {
+            assertThat(ArithmeticUtil.toBigDecimal("  123.45  ")).isEqualByComparingTo("123.45");
+        }
+
+        @Test
+        void shouldReturnZeroForNullString() {
+            assertThat(ArithmeticUtil.toBigDecimal((String) null)).isEqualByComparingTo(BigDecimal.ZERO);
+        }
+
+        @Test
+        void shouldReturnZeroForEmptyString() {
+            assertThat(ArithmeticUtil.toBigDecimal("")).isEqualByComparingTo(BigDecimal.ZERO);
+        }
+
+        @Test
+        void shouldReturnZeroForBlankString() {
+            assertThat(ArithmeticUtil.toBigDecimal("   ")).isEqualByComparingTo(BigDecimal.ZERO);
+        }
+
+        @Test
+        void shouldThrowExceptionForInvalidString() {
+            assertThatThrownBy(() -> ArithmeticUtil.toBigDecimal("abc"))
+                    .isInstanceOf(NumberFormatException.class);
         }
     }
 

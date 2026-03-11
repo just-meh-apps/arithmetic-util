@@ -18,6 +18,21 @@
 
 ---
 
+## Null 안전성
+
+`NullPointerException`을 방지하고 산술 로직을 단순화하기 위해, 이 클래스의 모든 메소드는 `null` 안전성을 고려하여 설계되었습니다. `Number` 또는 `String` 타입의 인자가 `null`일 경우, 자동으로 `BigDecimal.ZERO`로 처리됩니다. 이를 통해 외부적인 `null` 체크 없이도 모든 연산에서 예측 가능하고 안전한 동작을 보장합니다.
+
+```java
+// 아래 코드는 NullPointerException을 발생시키지 않습니다.
+BigDecimal sum = ArithmeticUtil.add(10, null);      // 결과: 10
+BigDecimal value = ArithmeticUtil.toBigDecimal(null); // 결과: 0
+boolean isZero = ArithmeticUtil.isZero(null);         // 결과: true
+```
+
+이러한 설계 원칙 덕분에 계산 중 예기치 않은 `null` 관련 오류에 대해 걱정할 필요가 없으므로 라이브러리가 더욱 견고하고 사용하기 쉬워집니다.
+
+---
+
 ## `Scale` Enum
 
 연산의 정밀도를 명확하고 일관되게 관리하기 위해 `Scale` 열거형을 제공합니다.
@@ -40,8 +55,17 @@
 
 ```java
 BigDecimal bd1 = ArithmeticUtil.toBigDecimal(123.45); // 123.45
-BigDecimal bd2 = ArithmeticUtil.toBigDecimal("123.45"); // 123.45
-BigDecimal bd3 = ArithmeticUtil.toBigDecimal(null);   // 0
+BigDecimal bd2 = ArithmeticUtil.toBigDecimal(null);   // 0
+```
+
+#### `toBigDecimal(String)`
+문자열을 `BigDecimal`로 변환합니다. `null`이거나 비어있거나 공백만 있는 문자열은 `BigDecimal.ZERO`로 처리됩니다.
+
+```java
+BigDecimal bd1 = ArithmeticUtil.toBigDecimal("123.45");      // 123.45
+BigDecimal bd2 = ArithmeticUtil.toBigDecimal("  123.45  ");  // 123.45
+BigDecimal bd3 = ArithmeticUtil.toBigDecimal(null);          // 0
+BigDecimal bd4 = ArithmeticUtil.toBigDecimal("");            // 0
 ```
 
 #### `toString(Number, boolean)`

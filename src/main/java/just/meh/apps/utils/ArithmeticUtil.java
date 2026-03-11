@@ -12,7 +12,16 @@ import java.util.Objects;
 /**
  * <p>A utility class for performing arithmetic operations with high precision, using {@link BigDecimal}.
  * This class is designed to handle various number types safely and prevent common floating-point errors.</p>
+ *
+ * <p><b>Null Handling:</b> To prevent {@link NullPointerException} and simplify arithmetic logic,
+ * all methods in this class treat {@code null} number inputs (including {@code String} representations)
+ * as {@link BigDecimal#ZERO}. This ensures predictable and safe behavior across all operations.</p>
+ *
  * <p>정밀한 산술 연산을 위한 유틸리티 클래스입니다. {@link BigDecimal}을 사용하여 부동소수점 오류 없이 안전하게 숫자를 다룰 수 있도록 설계되었습니다.</p>
+ *
+ * <p><b>Null 처리:</b> {@link NullPointerException}을 방지하고 산술 로직을 단순화하기 위해,
+ * 이 클래스의 모든 메소드는 {@code null} 숫자 입력(및 {@code String} 타입의 숫자 표현)을
+ * {@link BigDecimal#ZERO}로 처리합니다. 이를 통해 모든 연산에서 예측 가능하고 안전한 동작을 보장합니다.</p>
  *
  * @author just.meh.apps@gmail.com
  * @version 1.0
@@ -41,6 +50,7 @@ public final class ArithmeticUtil {
      *               <br>변환할 숫자. {@code null}일 수 있습니다.
      * @return The converted {@link BigDecimal}, or {@link BigDecimal#ZERO} if the input is {@code null}.
      *         <br>변환된 {@link BigDecimal}. 입력이 {@code null}이면 {@link BigDecimal#ZERO}를 반환합니다.
+     * @see #toBigDecimal(String)
      * @see #toString(Number, boolean)
      * @see #add(Number, Number)
      * @see #subtract(Number, Number)
@@ -50,7 +60,6 @@ public final class ArithmeticUtil {
      * @example
      * <pre>{@code
      * ArithmeticUtil.toBigDecimal(123.45);        // returns new BigDecimal("123.45")
-     * ArithmeticUtil.toBigDecimal("123.45");      // returns new BigDecimal("123.45")
      * ArithmeticUtil.toBigDecimal(null);          // returns BigDecimal.ZERO
      * }</pre>
      */
@@ -75,6 +84,38 @@ public final class ArithmeticUtil {
         }
         // 그 외 Long, Integer, Short, Byte 타입의 숫자는 long 값으로 변환하여 처리합니다.
         return BigDecimal.valueOf(number.longValue());
+    }
+
+    /**
+     * <p>Converts a {@link String} to a {@link BigDecimal}.
+     * If the input string is {@code null}, blank, or empty, it returns {@link BigDecimal#ZERO}.
+     * This method trims whitespace from the input string before conversion.</p>
+     * <p>{@link String}을 {@link BigDecimal}로 변환합니다.
+     * 입력된 문자열이 {@code null}이거나 비어있거나 공백만 있는 경우, {@link BigDecimal#ZERO}를 반환합니다.
+     * 이 메소드는 변환 전에 입력 문자열의 양 끝에 있는 공백을 제거합니다.</p>
+     *
+     * @param number The string to convert. Can be {@code null}.
+     *               <br>변환할 문자열. {@code null}일 수 있습니다.
+     * @return The converted {@link BigDecimal}, or {@link BigDecimal#ZERO} if the input is {@code null}, blank, or empty.
+     *         <br>변환된 {@link BigDecimal}. 입력이 {@code null}이거나 비어있거나 공백이면 {@link BigDecimal#ZERO}를 반환합니다.
+     * @throws NumberFormatException if the string is not a valid representation of a {@link BigDecimal} after trimming.
+     *                             <br>공백 제거 후 문자열이 유효한 {@link BigDecimal} 형식이 아닌 경우.
+     * @see #toBigDecimal(Number)
+     *
+     * @example
+     * <pre>{@code
+     * ArithmeticUtil.toBigDecimal("123.45");      // returns new BigDecimal("123.45")
+     * ArithmeticUtil.toBigDecimal("  123.45  ");  // returns new BigDecimal("123.45")
+     * ArithmeticUtil.toBigDecimal(null);          // returns BigDecimal.ZERO
+     * ArithmeticUtil.toBigDecimal("");            // returns BigDecimal.ZERO
+     * ArithmeticUtil.toBigDecimal("  ");          // returns BigDecimal.ZERO
+     * }</pre>
+     */
+    public static BigDecimal toBigDecimal(String number) {
+        if (number == null || number.trim().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return new BigDecimal(number.trim());
     }
 
     /**
@@ -569,8 +610,8 @@ public final class ArithmeticUtil {
     }
     
     /**
-     * <p>Checks if a number is equal to zero. A {@code null} input is considered zero.</p>
-     * <p>숫자가 0과 같은지 확인합니다. {@code null} 입력은 0으로 간주됩니다.</p>
+     * <p>Checks if a number is equal to zero. In line with the null-safe policy, a {@code null} input is treated as zero, causing this method to return {@code true}.</p>
+     * <p>숫자가 0과 같은지 확인합니다. Null-safe 정책에 따라 {@code null} 입력은 0으로 간주되므로, 이 메소드는 {@code null}에 대해 {@code true}를 반환합니다.</p>
      *
      * @param number The number to check. Can be {@code null}.
      *               <br>확인할 숫자. {@code null}일 수 있습니다.
@@ -762,13 +803,15 @@ public final class ArithmeticUtil {
     }
     
     /**
-     * <p>Checks if a number represents an integer value (has no fractional part).</p>
-     * <p>숫자가 정수 값(소수 부분 없음)을 나타내는지 확인합니다.</p>
+     * <p>Checks if a number represents an integer value (i.e., has no fractional part).
+     * Since a {@code null} input is treated as zero, it is considered an integer, and this method returns {@code true}.</p>
+     * <p>숫자가 정수 값(즉, 소수 부분이 없음)을 나타내는지 확인합니다.
+     * {@code null} 입력은 0으로 처리되므로 정수로 간주되어 이 메소드는 {@code true}를 반환합니다.</p>
      *
      * @param number The number to check. Can be {@code null}.
      *               <br>확인할 숫자. {@code null}일 수 있습니다.
-     * @return {@code true} if the number is an integer or {@code null}, otherwise {@code false}.
-     *         <br>숫자가 정수이거나 {@code null}이면 {@code true}, 그렇지 않으면 {@code false}.
+     * @return {@code true} if the number has an integer value or is {@code null}, otherwise {@code false}.
+     *         <br>숫자가 정수 값이거나 {@code null}이면 {@code true}, 그렇지 않으면 {@code false}.
      *
      * @example
      * <pre>{@code
@@ -790,8 +833,10 @@ public final class ArithmeticUtil {
     }
 
     /**
-     * <p>Checks if a number has a fractional part.</p>
-     * <p>숫자에 소수 부분이 있는지 확인합니다.</p>
+     * <p>Checks if a number has a non-zero fractional part.
+     * Since a {@code null} input is treated as zero (which has no fractional part), this method returns {@code false} for {@code null}.</p>
+     * <p>숫자에 0이 아닌 소수 부분이 있는지 확인합니다.
+     * {@code null} 입력은 소수 부분이 없는 0으로 처리되므로, 이 메소드는 {@code null}에 대해 {@code false}를 반환합니다.</p>
      *
      * @param number The number to check. Can be {@code null}.
      *               <br>확인할 숫자. {@code null}일 수 있습니다.
