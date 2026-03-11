@@ -1,3 +1,5 @@
+[English](./README.md)
+
 # ArithmeticUtil - 정밀 숫자 연산 유틸리티
 
 `ArithmeticUtil`은 Java에서 부동소수점 오류 없이 안전하고 정밀한 숫자 연산을 수행하기 위해 설계된 유틸리티 클래스입니다. 모든 연산은 내부적으로 `java.math.BigDecimal`을 사용하여 금융 및 공학 계산과 같이 높은 정밀도가 요구되는 모든 시나리오에서 신뢰할 수 있는 결과를 보장합니다.

@@ -1,3 +1,5 @@
+[한국어](./README-ko.md)
+
 # ArithmeticUtil - High-Precision Arithmetic Utility
 
 `ArithmeticUtil` is a utility class designed for safe and precise numerical operations in Java, avoiding floating-point errors. All operations internally use `java.math.BigDecimal` to ensure reliable results in scenarios requiring high precision, such as financial and engineering calculations.
