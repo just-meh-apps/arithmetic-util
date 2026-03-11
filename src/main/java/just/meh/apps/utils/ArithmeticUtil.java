@@ -19,7 +19,14 @@ import java.util.Objects;
  * @since 1.0
  */
 public final class ArithmeticUtil {
+    
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     * <p>
+     * 이 유틸리티 클래스의 인스턴스화를 방지하기 위한 private 생성자입니다.
+     */
     private ArithmeticUtil() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
     
     /**
