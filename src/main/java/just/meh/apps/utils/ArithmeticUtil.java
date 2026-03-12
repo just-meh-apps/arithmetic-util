@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * <p>A utility class for performing arithmetic operations with high precision, using {@link BigDecimal}.
@@ -568,16 +567,19 @@ public final class ArithmeticUtil {
      * }</pre>
      */
     public static BigDecimal min(Number... numbers) {
-        // numbers 배열이 null이거나 비어있으면 0을 반환합니다.
         if (numbers == null || numbers.length == 0) {
             return BigDecimal.ZERO;
         }
-        // Java Stream API를 사용하여 최소값을 효율적으로 찾습니다.
-        return Arrays.stream(numbers)
-                .filter(Objects::nonNull) // 스트림에서 null 값을 제거합니다.
-                .map(ArithmeticUtil::toBigDecimal) // 각 숫자를 BigDecimal로 변환합니다.
-                .min(BigDecimal::compareTo) // BigDecimal의 compareTo 메소드를 기준으로 최소값을 찾습니다.
-                .orElse(BigDecimal.ZERO); // 스트림이 비어있을 경우(모든 요소가 null인 경우) 0을 반환합니다.
+        BigDecimal min = null;
+        for (Number number : numbers) {
+            if (number != null) {
+                BigDecimal bd = toBigDecimal(number);
+                if (min == null || bd.compareTo(min) < 0) {
+                    min = bd;
+                }
+            }
+        }
+        return min == null ? BigDecimal.ZERO : min;
     }
 
     /**
@@ -597,16 +599,19 @@ public final class ArithmeticUtil {
      * }</pre>
      */
     public static BigDecimal max(Number... numbers) {
-        // numbers 배열이 null이거나 비어있으면 0을 반환합니다.
         if (numbers == null || numbers.length == 0) {
             return BigDecimal.ZERO;
         }
-        // Java Stream API를 사용하여 최대값을 효율적으로 찾습니다.
-        return Arrays.stream(numbers)
-                .filter(Objects::nonNull) // 스트림에서 null 값을 제거합니다.
-                .map(ArithmeticUtil::toBigDecimal) // 각 숫자를 BigDecimal로 변환합니다.
-                .max(BigDecimal::compareTo) // BigDecimal의 compareTo 메소드를 기준으로 최대값을 찾습니다.
-                .orElse(BigDecimal.ZERO); // 스트림이 비어있을 경우(모든 요소가 null인 경우) 0을 반환합니다.
+        BigDecimal max = null;
+        for (Number number : numbers) {
+            if (number != null) {
+                BigDecimal bd = toBigDecimal(number);
+                if (max == null || bd.compareTo(max) > 0) {
+                    max = bd;
+                }
+            }
+        }
+        return max == null ? BigDecimal.ZERO : max;
     }
     
     /**

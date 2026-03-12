@@ -14,7 +14,8 @@
 
 ## Requirements
 
-- **Java 8** or higher.
+- **Java 8** or higher (for the overall project build).
+- The `ArithmeticUtil` class itself is compatible with **Java 5** and higher.
 
 ---
 
